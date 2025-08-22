@@ -164,8 +164,55 @@ $(function () {
         }
       }
     });
+    /**
+     * mousedown : 마우스를 사용하는 기기를 위한 이벤트
+     * 
+     * touchstart : 터치스크린이 있는 기기를 위한 이벤트
+     *              손가락이 화면에 닿았을 때 발생
+     * 
+     * mousedown으로만 모두 처리 가능하긴함
+     * 하지만 반응 속도 지연 발생
+     * 모바일 브라우저는 사용자가 화면을 터치했을 때, 이것이 한 번의 탭인지
+     * 아니면 화면을 확대하기 위한 더블 탭인지 구분하기위해
+     * 0.3초 정도 기다린 후 작업 진행 
+     * 
+     * 과제 : 마우스 클릭 및 모바일 터치 처리
+     * $(".key").on("mousedown touchstart", function (e) {
+     *   e.preventDefault(); //더블 클릭 시 확대 등 기본 동작 방지
+     * 
+     * })
+     * 
+     */
+
+  /**
+   * 마우스 클릭 및 모바일 터치 처리
+   */
+  $(".key").on("mousedown touchstart", function (e) {
+    if (!gameActive) return; // 게임이 활성화 상태가 아니면 종료
+
+    e.preventDefault(); // 더블 클릭 시 확대 등 기본 동작 방지
+    const lane = $(this).parent().index();
+    const judgeLine = $("#game-container").height() - 80;
+
+    // 해당 레인의 모든 아이템을 검사해서 판정 수행
+    $(".note").each(function () {
+      if ($(this).data("lane") === lane) {
+        const notePos = $(this).position().top + 25;
+        if (Math.abs(notePos - judgeLine) < 50) {
+          $(this).stop().remove();
+          score++;
+          $("#score").text(score);
+          showHitEffect(lane);
+          $(".key").eq(lane).addClass("perfect");
+          setTimeout(() => $(".key").eq(lane).removeClass("perfect"), 300);
+          return false;
+        }
+      }
+    });
     // 성공/실패 관계없이 항상 키 눌림 설정에 대해서 css 적으로 보여주기
+    // $(".key").eq(lane) 현재 눌림을 당하고 있는 키에 passed 클래스 추가 
     $(".key").eq(lane).addClass("passed");
+    // 0.1 초 후 눌림을 당하고 눌림 당하기를 종료한 레인 키에 passed 클래스 제거
     setTimeout(() => $(".key").eq(lane).removeClass("passed"), 100);
   });
 
