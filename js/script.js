@@ -183,18 +183,15 @@ $(function () {
      * })
      * 
      */
-
-  /**
+ /**
    * 마우스 클릭 및 모바일 터치 처리
    */
   $(".key").on("mousedown touchstart", function (e) {
-    if (!gameActive) return; // 게임이 활성화 상태가 아니면 종료
-
-    e.preventDefault(); // 더블 클릭 시 확대 등 기본 동작 방지
+    if (!gameActive) return;
+    e.preventDefault();
     const lane = $(this).parent().index();
     const judgeLine = $("#game-container").height() - 80;
 
-    // 해당 레인의 모든 아이템을 검사해서 판정 수행
     $(".note").each(function () {
       if ($(this).data("lane") === lane) {
         const notePos = $(this).position().top + 25;
@@ -209,6 +206,10 @@ $(function () {
         }
       }
     });
+
+    $(".key").eq(lane).addClass("pressed");
+    setTimeout(() => $(".key").eq(lane).removeClass("pressed"), 100);
+  });
     // 성공/실패 관계없이 항상 키 눌림 설정에 대해서 css 적으로 보여주기
     // $(".key").eq(lane) 현재 눌림을 당하고 있는 키에 passed 클래스 추가 
     $(".key").eq(lane).addClass("passed");
