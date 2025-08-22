@@ -186,7 +186,7 @@ $(function () {
 
     $(".key").on("mousedown touchstart", function (e) {
       e.preventDefault(); // 더블 클릭 시 확대 등 기본 동작 방지
-
+      e.stopPropagation();
       const lane = $(this).parent().index();
       const judgeLine = $("#game-container").height() - 80;
       $(".note").each(function () {
@@ -213,5 +213,5 @@ $(function () {
     setTimeout(() => $(".key").eq(lane).removeClass("passed"), 100);
   });
 
-  startGame();
+  $("#startBtn").click(startGame);
 });
